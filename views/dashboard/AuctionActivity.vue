@@ -4,8 +4,89 @@ import { ref, onMounted } from "vue";
 const statistics = ref([]);
 const isLoading = ref(true);
 
+const lineChartOptions = ref({
+    chart: {
+        type: "line",
+        toolbar: { show: true },
+        zoom: { enabled: false },
+        sparkline: { enabled: false }, // Para mostrar grid e labels melhor, desabilitei sparkline
+    },
+    stroke: {
+        curve: "smooth",
+        width: 3,
+    },
+    markers: {
+        size: 5,
+    },
+    xaxis: {
+        categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        labels: {
+            show: true,
+            style: {
+                fontSize: "13px",
+                colors: "#555",
+            },
+        },
+        title: {
+            text: "Days of the Week",
+            style: {
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: "#777",
+            },
+        },
+    },
+    yaxis: {
+        show: true,
+        labels: {
+            style: {
+                fontSize: "13px",
+                colors: "#555",
+            },
+        },
+        title: {
+            text: "Number of Bids",
+            style: {
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: "#777",
+            },
+        },
+    },
+    colors: ["#9155FD"],
+    grid: {
+        show: true,
+        borderColor: "#eee",
+        strokeDashArray: 4,
+    },
+    dataLabels: {
+        enabled: true,
+        style: {
+            fontSize: "12px",
+            colors: ["#9155FD"],
+        },
+    },
+    tooltip: {
+        enabled: true,
+        theme: "light",
+        x: {
+            show: true,
+        },
+    },
+    legend: {
+        show: true,
+        position: "top",
+    },
+});
+
+const lineChartSeries = ref([
+    {
+        name: "Bids",
+        data: [10, 15, 8, 12, 20, 18, 14],
+    },
+]);
+
 onMounted(async () => {
-    // TODO: Replace with actual API call
     const response = await new Promise((resolve) => {
         setTimeout(() => {
             resolve([
@@ -54,7 +135,7 @@ const moreList = [
 </script>
 
 <template>
-    <VCard class="w-100 h-40" title="Auction Activity">
+    <VCard title="Auction Activity">
         <!-- Loading State -->
         <div v-if="isLoading" class="text-center py-6">
             <VProgressCircular indeterminate color="primary" size="28" />
@@ -98,5 +179,12 @@ const moreList = [
                 </VCol>
             </VRow>
         </VCardText>
+
+        <VueApexCharts
+            type="line"
+            :options="lineChartOptions"
+            :series="lineChartSeries"
+            :height="180"
+        />
     </VCard>
 </template>

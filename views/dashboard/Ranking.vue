@@ -143,7 +143,7 @@ onMounted(() => {
                 <div>
                     <h6 class="text-h5 mb-1">Top Bidders Ranking 🏆</h6>
                 </div>
-                <VBtn variant="outlined" size="x-small" color="primary">
+                <VBtn variant="outlined" size="small" color="primary">
                     View All
                 </VBtn>
             </div>
@@ -232,27 +232,7 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-
-            <!-- Achievement Badge for Top Bidder -->
-            <VAlert
-                v-if="!isLoading && topBidders.length > 0"
-                type="success"
-                variant="tonal"
-                density="compact"
-                class="mt-3"
-            >
-                <template #prepend>
-                    <VIcon icon="mdi-trophy" size="16" />
-                </template>
-                <span class="text-caption">
-                    {{ topBidders[0].name }} is dominating with
-                    {{ topBidders[0].auctionsWon }} wins! 🚀
-                </span>
-            </VAlert>
         </VCardText>
-
-        <!-- Trophy Background -->
-        <VImg :src="trophy" class="trophy-bg" />
     </VCard>
 </template>
 
