@@ -3,6 +3,41 @@ import { ref, onMounted, computed } from "vue";
 
 const auctions = ref([]);
 
+// Filter refs
+const nameFilter = ref("");
+const endDateFilter = ref("");
+const priceFilter = ref(null);
+
+const filteredAuctions = computed(() => {
+    let filtered = auctions.value;
+
+    if (nameFilter.value) {
+        filtered = filtered.filter((auction) =>
+            auction.name.toLowerCase().includes(nameFilter.value.toLowerCase())
+        );
+    }
+
+    if (endDateFilter.value) {
+        filtered = filtered.filter((auction) => {
+            const endDate = new Date(auction.end_time);
+            const filterDate = new Date(endDateFilter.value);
+            return endDate.toDateString() === filterDate.toDateString();
+        });
+    }
+
+    if (priceFilter.value) {
+        filtered = filtered.filter((auction) =>
+            auction.items.some(
+                (item) =>
+                    parseFloat(item.current_bid) <=
+                    parseFloat(priceFilter.value)
+            )
+        );
+    }
+
+    return filtered;
+});
+
 // Define os status possíveis e suas configurações
 const statusConfig = [
     {
@@ -35,7 +70,7 @@ const statusConfig = [
 const auctionsByStatus = computed(() => {
     const grouped = {};
     statusConfig.forEach((status) => {
-        grouped[status.key] = auctions.value.filter(
+        grouped[status.key] = filteredAuctions.value.filter(
             (auction) => auction.status === status.key,
         );
     });
@@ -54,6 +89,36 @@ onMounted(async () => {
 </script>
 
 <template>
+    <VCard class="mb-4">
+        <VCardText>
+            <VRow>
+                <VCol cols="12" md="4">
+                    <VTextField
+                        v-model="nameFilter"
+                        label="Filter by name"
+                        clearable
+                    />
+                </VCol>
+                <VCol cols="12" md="4">
+                    <VTextField
+                        v-model="endDateFilter"
+                        label="Filter by end date"
+                        type="date"
+                        clearable
+                    />
+                </VCol>
+                <VCol cols="12" md="4">
+                    <VTextField
+                        v-model="priceFilter"
+                        label="Filter by max price"
+                        type="number"
+                        clearable
+                    />
+                </VCol>
+            </VRow>
+        </VCardText>
+    </VCard>
+
     <VRow>
         <!-- Coluna para cada status -->
         <VCol
@@ -85,48 +150,52 @@ onMounted(async () => {
 
             <!-- Lista de leilões desta coluna -->
             <div class="flex-grow-1">
-                <VCard
-                    v-for="auction in auctionsByStatus[statusItem.key]"
-                    :key="auction.id"
-                    class="mb-3"
-                    elevation="2"
-                >
-                    <VCardItem>
-                        <VCardTitle class="text-body-1">{{
-                            auction.name
-                        }}</VCardTitle>
-                    </VCardItem>
-                    <VCardText>
-                        <VList lines="two" density="compact">
-                            <VListItem
-                                v-for="item in auction.items"
-                                :key="item.id"
-                                class="px-0"
-                            >
-                                <VListItemTitle class="text-body-2">
-                                    {{ item.name }}
-                                </VListItemTitle>
-                                <VListItemSubtitle class="text-caption">
-                                    {{ item.description }}
-                                </VListItemSubtitle>
-                                <template #append>
-                                    <div class="text-right">
-                                        <div
-                                            class="font-weight-bold text-body-2"
-                                        >
-                                            R$ {{ item.current_bid }}
+                <NuxtLink v-for="auction in auctionsByStatus[statusItem.key]" :key="auction.id" :to="`/auction/${auction.id}`" class="text-decoration-none">
+                    <VCard
+                        class="mb-3"
+                        elevation="2"
+                    >
+                        <VCardItem>
+                            <VCardTitle class="text-body-1">{{
+                                auction.name
+                            }}</VCardTitle>
+                        </VCardItem>
+                        <VCardText>
+                            <VList lines="two" density="compact">
+                                <VListItem
+                                    v-for="item in auction.items"
+                                    :key="item.id"
+                                    class="px-0"
+                                >
+                                    <VListItemTitle class="text-body-2">
+                                        {{ item.name }}
+                                    </VListItemTitle>
+                                    <VListItemSubtitle class="text-caption">
+                                        {{ item.description }}
+                                    </VListItemSubtitle>
+                                    <template #append>
+                                        <div class="text-right">
+                                            <div
+                                                class="font-weight-bold text-body-2"
+                                            >
+                                                R$ {{ item.current_bid }}
+                                            </div>
+                                            <div
+                                                class="text-caption text-medium-emphasis"
+                                            >
+                                                Lance Atual
+                                            </div>
                                         </div>
-                                        <div
-                                            class="text-caption text-medium-emphasis"
-                                        >
-                                            Lance Atual
-                                        </div>
-                                    </div>
-                                </template>
-                            </VListItem>
-                        </VList>
-                    </VCardText>
-                </VCard>
+                                    </template>
+                                </VListItem>
+                            </VList>
+                        </VCardText>
+                        <VCardActions v-if="auction.status === 'ATIVO'">
+                            <VSpacer />
+                            <VBtn color="primary">Place Bid</VBtn>
+                        </VCardActions>
+                    </VCard>
+                </NuxtLink>
 
                 <!-- Mensagem quando não há leilões -->
                 <VCard

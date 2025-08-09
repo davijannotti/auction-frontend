@@ -83,8 +83,8 @@ import UserProfile from "@/layouts/components/UserProfile.vue";
             <NavItems />
         </template>
 
-        <!-- 👉 Pages -->
-        <slot />
+    <!-- 👉 Pages -->
+    <NuxtPage />
 
         <!-- 👉 Footer -->
         <template #footer>
