@@ -153,6 +153,14 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
   <VerticalNavLink
     :item="{
+      title: 'Auctions',
+      icon: 'ri-auction-line',
+      to: '/auctions',
+    }"
+  />
+
+  <VerticalNavLink
+    :item="{
       title: 'Account Settings',
       icon: 'ri-user-settings-line',
       to: '/account-settings',

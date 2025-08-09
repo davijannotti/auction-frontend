@@ -1,30 +1,42 @@
 <script setup lang="ts">
-const statistics = [
-  {
-    title: 'Sales',
-    stats: '245k',
-    icon: 'ri-pie-chart-2-line',
-    color: 'primary',
-  },
-  {
-    title: 'Customers',
-    stats: '12.5k',
-    icon: 'ri-group-line',
-    color: 'success',
-  },
-  {
-    title: 'Product',
-    stats: '1.54k',
-    icon: 'ri-macbook-line',
-    color: 'warning',
-  },
-  {
-    title: 'Revenue',
-    stats: '$88k',
-    icon: 'ri-money-dollar-circle-line',
-    color: 'info',
-  },
-]
+import { ref, onMounted } from 'vue'
+
+const statistics = ref([])
+
+onMounted(async () => {
+  // TODO: Replace with actual API call
+  const response = await new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
+        {
+          title: 'Active Bids',
+          stats: '12',
+          icon: 'ri-auction-line',
+          color: 'primary',
+        },
+        {
+          title: 'Auctions Won',
+          stats: '3',
+          icon: 'ri-trophy-line',
+          color: 'success',
+        },
+        {
+          title: 'Total Spent',
+          stats: '$1,245',
+          icon: 'ri-money-dollar-circle-line',
+          color: 'info',
+        },
+        {
+          title: 'Watching',
+          stats: '27',
+          icon: 'ri-eye-line',
+          color: 'warning',
+        },
+      ])
+    }, 1000)
+  })
+  statistics.value = response
+})
 
 const moreList = [
   { title: 'Share', value: 'Share' },
@@ -34,7 +46,7 @@ const moreList = [
 </script>
 
 <template>
-  <VCard title="Transactions">
+  <VCard title="Auction Activity">
     <template #subtitle>
       <p class="text-body-1 mb-0">
         <span class="d-inline-block font-weight-medium text-high-emphasis">Total 48.5% Growth</span> <span class="text-high-emphasis">😎</span> this month
