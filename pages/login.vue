@@ -27,7 +27,8 @@ const login = async () => {
     });
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem('token', data.access);
+      localStorage.setItem('accessToken', data.access);
+      localStorage.setItem('refreshToken', data.refresh);
       router.push('/');
     } else {
       console.error('Login failed');
