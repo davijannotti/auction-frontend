@@ -14,6 +14,29 @@ const form = ref({
   remember: false,
 })
 
+const router = useRouter()
+
+const login = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/token/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(form.value),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.access);
+      router.push('/');
+    } else {
+      console.error('Login failed');
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+  }
+};
+
 const vuetifyTheme = useTheme()
 
 const authThemeMask = computed(() => {
@@ -61,7 +84,7 @@ definePageMeta({ layout: 'blank' })
       </VCardText>
 
       <VCardText>
-        <VForm @submit.prevent="() => {}">
+        <VForm @submit.prevent="login">
           <VRow>
             <!-- email -->
             <VCol cols="12">

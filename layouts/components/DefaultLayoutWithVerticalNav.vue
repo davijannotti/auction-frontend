@@ -88,7 +88,7 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
     </template>
 
     <!-- 👉 Pages -->
-    <slot />
+    <NuxtPage />
 
     <!-- 👉 Footer -->
     <template #footer>
