@@ -86,13 +86,13 @@ definePageMeta({ layout: 'blank' })
       <VCardText>
         <VForm @submit.prevent="login">
           <VRow>
-            <!-- email -->
+            <!-- username -->
             <VCol cols="12">
               <VTextField
                 :id="useId()"
-                v-model="form.email"
-                label="Email"
-                type="email"
+                v-model="form.username"
+                label="Username"
+                type="text"
               />
             </VCol>
 
@@ -129,7 +129,6 @@ definePageMeta({ layout: 'blank' })
               <VBtn
                 block
                 type="submit"
-                to="/"
               >
                 Login
               </VBtn>
