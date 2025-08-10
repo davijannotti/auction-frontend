@@ -2,6 +2,8 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
+const API_URL = "http://127.0.0.1:8000";
+
 const auction = ref(null);
 const route = useRoute();
 const auctionId = route.params.id;
@@ -17,7 +19,10 @@ const openBidDialog = (item) => {
 };
 
 const placeBid = async () => {
-    if (!selectedItem.value || bidAmount.value <= parseFloat(selectedItem.value.current_bid)) {
+    if (
+        !selectedItem.value ||
+        bidAmount.value <= parseFloat(selectedItem.value.current_bid)
+    ) {
         alert("Your bid must be higher than the current bid.");
         return;
     }
@@ -37,7 +42,9 @@ const placeBid = async () => {
         if (response.ok) {
             alert("Bid placed successfully!");
             // Optionally, refresh auction data or update current bid
-            const updatedAuctionResponse = await fetch(`http://127.0.0.1:8000/api/auctions/${auctionId}/`);
+            const updatedAuctionResponse = await fetch(
+                `http://127.0.0.1:8000/api/auctions/${auctionId}/`,
+            );
             const updatedAuctionData = await updatedAuctionResponse.json();
             auction.value = updatedAuctionData;
         } else {
@@ -54,7 +61,9 @@ const placeBid = async () => {
 
 onMounted(async () => {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/auctions/${auctionId}/`);
+        const response = await fetch(
+            `http://127.0.0.1:8000/api/auctions/${auctionId}/`,
+        );
         const data = await response.json();
         auction.value = data;
     } catch (error) {
@@ -70,8 +79,12 @@ onMounted(async () => {
             <VRow>
                 <VCol cols="12" md="6">
                     <VImg
-                        v-if="auction.items && auction.items.length > 0 && auction.items[0].image"
-                        :src="auction.items[0].image"
+                        v-if="
+                            auction.items &&
+                            auction.items.length > 0 &&
+                            auction.items[0].image
+                        "
+                        :src="`${API_URL}${auction.items[0].image}`"
                         aspect-ratio="16/9"
                         cover
                         class="rounded-lg"
@@ -92,7 +105,9 @@ onMounted(async () => {
                             :key="item.id"
                             class="px-0"
                         >
-                            <VListItemTitle class="text-body-1 font-weight-medium">
+                            <VListItemTitle
+                                class="text-body-1 font-weight-medium"
+                            >
                                 {{ item.name }}
                             </VListItemTitle>
                             <VListItemSubtitle class="text-caption">
@@ -103,14 +118,20 @@ onMounted(async () => {
                                     <div class="font-weight-bold text-h6">
                                         R$ {{ item.current_bid }}
                                     </div>
-                                    <div class="text-caption text-medium-emphasis">
+                                    <div
+                                        class="text-caption text-medium-emphasis"
+                                    >
                                         Current Bid
                                     </div>
                                 </div>
                             </template>
                             <VCardActions>
                                 <VSpacer />
-                                <VBtn color="primary" @click="openBidDialog(item)">Place Bid</VBtn>
+                                <VBtn
+                                    color="primary"
+                                    @click="openBidDialog(item)"
+                                    >Place Bid</VBtn
+                                >
                             </VCardActions>
                         </VListItem>
                     </VList>
@@ -124,13 +145,19 @@ onMounted(async () => {
 
     <VDialog v-model="showBidDialog" max-width="500px">
         <VCard>
-            <VCardTitle class="headline">Place Bid for {{ selectedItem?.name }}</VCardTitle>
+            <VCardTitle class="headline"
+                >Place Bid for {{ selectedItem?.name }}</VCardTitle
+            >
             <VCardText>
                 <VTextField
                     v-model.number="bidAmount"
                     label="Your Bid"
                     type="number"
-                    :min="selectedItem ? parseFloat(selectedItem.current_bid) + 1 : 0"
+                    :min="
+                        selectedItem
+                            ? parseFloat(selectedItem.current_bid) + 1
+                            : 0
+                    "
                     step="0.01"
                     outlined
                     dense
@@ -138,8 +165,12 @@ onMounted(async () => {
             </VCardText>
             <VCardActions>
                 <VSpacer></VSpacer>
-                <VBtn color="blue darken-1" text @click="showBidDialog = false">Cancel</VBtn>
-                <VBtn color="green darken-1" text @click="placeBid">Place Bid</VBtn>
+                <VBtn color="blue darken-1" text @click="showBidDialog = false"
+                    >Cancel</VBtn
+                >
+                <VBtn color="green darken-1" text @click="placeBid"
+                    >Place Bid</VBtn
+                >
             </VCardActions>
         </VCard>
     </VDialog>
