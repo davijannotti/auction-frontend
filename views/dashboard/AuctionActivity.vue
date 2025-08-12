@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 
 const statistics = ref([]);
+const header = ref<HeaderItem[]>([]);
 const isLoading = ref(true);
 
 const lineChartOptions = ref({
@@ -87,44 +88,64 @@ const lineChartSeries = ref([
 ]);
 
 onMounted(async () => {
-    const response = await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve([
-                {
-                    title: "Active Bids",
-                    stats: "12",
-                    icon: "ri-auction-line",
-                    color: "primary",
-                },
-                {
-                    title: "Auctions Won",
-                    stats: "3",
-                    icon: "ri-trophy-line",
-                    color: "success",
-                },
-                {
-                    title: "Auctions Lost",
-                    stats: "2",
-                    icon: "ri-trophy-line",
-                    color: "error",
-                },
-                {
-                    title: "Win Rate",
-                    stats: "23%",
-                    icon: "ri-bar-chart-line",
-                    color: "error",
-                },
-                {
-                    title: "Total Spent",
-                    stats: "$1,245",
-                    icon: "ri-money-dollar-circle-line",
-                    color: "info",
-                },
-            ]);
-        }, 1000);
-    });
-    statistics.value = response;
-    isLoading.value = false;
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:8000/api/users/4/statistics/",
+        );
+        const data = await response.json();
+        statistics.value = data;
+
+        const bids = statistics.value.bids?.length || 0;
+        const auctions_won = statistics.value.auctions_won?.length || 0;
+        const auctions_lost = statistics.value.auctions_lost?.length || 0;
+        const win_rate =
+            bids > 0 ? ((auctions_won / bids) * 100).toFixed(2) + "%" : "100%";
+
+        header.value = [
+            {
+                title: "Active Bids",
+                stats: bids,
+                icon: "ri-auction-line",
+                color: "primary",
+            },
+            {
+                title: "Auctions Won",
+                stats: auctions_won,
+                icon: "ri-trophy-line",
+                color: "success",
+            },
+            {
+                title: "Auctions Lost",
+                stats: auctions_lost,
+                icon: "ri-trophy-line",
+                color: "error",
+            },
+            {
+                title: "Win Rate",
+                stats: win_rate,
+                icon: "ri-bar-chart-line",
+                color: "error",
+            },
+            {
+                title: "Total Spent",
+                stats: (
+                    statistics.value.auctions_won?.reduce(
+                        (sum, item) => sum + parseFloat(item.current_bid),
+                        0,
+                    ) || 0
+                ).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                }),
+                icon: "ri-money-dollar-circle-line",
+                color: "info",
+            },
+        ];
+
+        isLoading.value = false;
+    } catch (error) {
+        console.error("Error fetching auctions:", error);
+    }
 });
 
 const moreList = [
@@ -151,7 +172,7 @@ const moreList = [
         <VCardText>
             <VRow no-gutters>
                 <VCol
-                    v-for="item in statistics"
+                    v-for="item in header"
                     :key="item.title"
                     cols="12"
                     sm="6"

@@ -7,107 +7,34 @@ interface BidderRanking {
     name: string;
     avatar?: string;
     auctionsWon: number;
-    totalValue: number;
     winRate: number;
 }
 
 const topBidders = ref<BidderRanking[]>([]);
 const isLoading = ref(true);
 
-// Mock data - replace with actual API call
-const fetchTopBidders = async () => {
+onMounted(async () => {
     try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = await fetch(
+            "http://127.0.0.1:8000/api/users/ranking/",
+        );
+        const data = await response.json();
 
-        topBidders.value = [
-            {
-                id: 1,
-                name: "John Smith",
-                avatar: "https://ui-avatars.com/api/?name=John+Smith&background=7367F0&color=fff",
-                auctionsWon: 23,
-                totalValue: 42800,
-                winRate: 78,
-            },
-            {
-                id: 2,
-                name: "Sarah Johnson",
-                avatar: "https://ui-avatars.com/api/?name=Sarah+Johnson&background=28C76F&color=fff",
-                auctionsWon: 18,
-                totalValue: 35200,
-                winRate: 65,
-            },
-            {
-                id: 3,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-            {
-                id: 4,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-            {
-                id: 5,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-            {
-                id: 6,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-            {
-                id: 7,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-            {
-                id: 8,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-            {
-                id: 9,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-            {
-                id: 10,
-                name: "Mike Wilson",
-                avatar: "https://ui-avatars.com/api/?name=Mike+Wilson&background=FF9F43&color=fff",
-                auctionsWon: 15,
-                totalValue: 28900,
-                winRate: 58,
-            },
-        ];
-    } catch (error) {
-        console.error("Error fetching bidders ranking:", error);
-    } finally {
+        topBidders.value = data.map((user: any) => ({
+            id: user.id,
+            name: user.username,
+            avatar:
+                user.avatar_url ||
+                "https://ui-avatars.com/api/?name=Daniel+Lago&background=FF9F43&color=fff",
+            auctionsWon: user.auctions_won || 0,
+            winRate: user.win_rate || 0,
+        }));
+
         isLoading.value = false;
+    } catch (error) {
+        console.error("Error fetching auctions:", error);
     }
-};
+});
 
 const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -130,10 +57,6 @@ const getRankIcon = (index: number) => {
             return `#${index + 1}`;
     }
 };
-
-onMounted(() => {
-    fetchTopBidders();
-});
 </script>
 
 <template>
@@ -200,11 +123,6 @@ onMounted(() => {
                                     size="16"
                                     class="ms-1"
                                 />
-                            </div>
-                            <div
-                                class="text-body-1 text-primary font-weight-bold"
-                            >
-                                {{ formatCurrency(bidder.totalValue) }}
                             </div>
                         </div>
 
