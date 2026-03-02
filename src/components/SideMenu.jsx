@@ -6,51 +6,37 @@ import Typography from "@mui/material/Typography";
 
 export default function SideMenu() {
   return (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          mt: "calc(var(--template-frame-height, 0px) + 4px)",
-          p: 1.5,
-        }}
-      ></Box>
+    <Box
+      sx={{
+        width: 240,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Box sx={{ p: 2, mt: 2 }}>
+        <Typography variant="h6">Menu</Typography>
+      </Box>
       <Divider />
-      <Box
-        sx={{
-          overflow: "auto",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      ></Box>
-      <Stack
-        direction="row"
-        sx={{
-          p: 2,
-          gap: 1,
-          alignItems: "center",
-          borderTop: "1px solid",
-          borderColor: "divider",
-        }}
-      >
+
+      <Box sx={{ flexGrow: 1 }}></Box>
+
+      <Divider />
+      <Stack direction="row" sx={{ p: 2, gap: 1, alignItems: "center" }}>
         <Avatar
-          sizes="small"
-          alt="Amamentador"
+          alt="Riley Carter"
           src="/static/images/avatar/7.jpg"
           sx={{ width: 36, height: 36 }}
         />
-        <Box sx={{ mr: "auto" }}>
-          <Typography
-            variant="body2"
-            sx={{ fontWeight: 500, lineHeight: "16px" }}
-          >
-            Amamentador
+        <Box>
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            Riley Carter
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            amamentador@email.com
+            riley@email.com
           </Typography>
         </Box>
       </Stack>
-    </>
+    </Box>
   );
 }
