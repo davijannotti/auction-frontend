@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import Navbar from "./components/Navbar";
 import SideMenu from "./components/SideMenu";
 import MuiDrawer from "@mui/material/Drawer";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { drawerClasses } from "@mui/material/Drawer";
 
 const drawerWidth = 240;
@@ -25,12 +27,14 @@ export default function Dashboard() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Navbar onMenuClick={handleToggleDrawer} />
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box sx={{ display: "flex" }}>
+        <Navbar onMenuClick={handleToggleDrawer} />
 
-      <Drawer open={open} onClose={handleToggleDrawer} variant="persistent">
-        <SideMenu />
-      </Drawer>
-    </Box>
+        <Drawer open={open} onClose={handleToggleDrawer} variant="persistent">
+          <SideMenu />
+        </Drawer>
+      </Box>
+    </LocalizationProvider>
   );
 }
