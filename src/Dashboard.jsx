@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Navbar from "./components/Navbar";
 import SideMenu from "./components/SideMenu";
-import Button from "@mui/material/Button";
-import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
+import MuiDrawer from "@mui/material/Drawer";
+import { drawerClasses } from "@mui/material/Drawer";
 
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer)({
   width: drawerWidth,
   flexShrink: 0,
-  boxSizing: "border-box",
-  mt: 10,
   [`& .${drawerClasses.paper}`]: {
     width: drawerWidth,
     boxSizing: "border-box",
@@ -20,25 +20,17 @@ const Drawer = styled(MuiDrawer)({
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
 
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
+  const handleToggleDrawer = () => {
+    setOpen(!open);
   };
 
   return (
-    <>
-      <Button onClick={toggleDrawer(true)}>Open drawer</Button>
-      <Drawer
-        open={open}
-        onClose={toggleDrawer(false)}
-        sx={{
-          display: { xs: "none", md: "block" },
-          [`& .${drawerClasses.paper}`]: {
-            backgroundColor: "background.paper",
-          },
-        }}
-      >
+    <Box sx={{ display: "flex" }}>
+      <Navbar onMenuClick={handleToggleDrawer} />
+
+      <Drawer open={open} onClose={handleToggleDrawer} variant="persistent">
         <SideMenu />
       </Drawer>
-    </>
+    </Box>
   );
 }
