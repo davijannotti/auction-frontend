@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   Avatar,
@@ -41,12 +42,14 @@ export default function SideMenu() {
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <List>
           {[
-            { text: "Home", icon: <HomeIcon /> },
-            { text: "Auctions", icon: <GavelIcon /> },
-            { text: "Itens", icon: <BallotIcon /> },
+            { text: "Home", icon: <HomeIcon />, path: "/dashboard" },
+            { text: "Auctions", icon: <GavelIcon />, path: "/auctions" },
+            { text: "Itens", icon: <BallotIcon />, path: "/items" },
           ].map((item, index) => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
+                component={Link}
+                to={item.path}
                 selected={selectedIndex === index}
                 onClick={(event) => handleListItemClick(event, index)}
                 sx={{ gap: 1 }}
