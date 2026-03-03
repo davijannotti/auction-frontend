@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Navbar from "./components/Navbar";
@@ -34,6 +35,19 @@ export default function Dashboard() {
         <Drawer open={open} onClose={handleToggleDrawer} variant="persistent">
           <SideMenu />
         </Drawer>
+
+        <Box 
+          component="main" 
+          sx={{ 
+            flexGrow: 1, 
+            p: 3, 
+            mt: 8, // Espaço da Navbar
+            minHeight: '100vh' 
+          }}
+        >
+          {/* O Outlet é onde o componente da rota (Home ou Auctions) será renderizado */}
+          <Outlet /> 
+        </Box>
       </Box>
     </LocalizationProvider>
   );
