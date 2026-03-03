@@ -5,7 +5,7 @@ export default function Auctions() {
     const nav = useNavigate();
 
     const navigate = () => {
-        nav('/home');
+        nav('/dashboard');
     }
 
     return (

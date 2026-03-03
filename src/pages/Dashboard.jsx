@@ -10,7 +10,7 @@ export default function Auctions() {
 
     return (
         <>
-            <h1>home</h1>
+            <h1>dashboard</h1>
         </>
     );
 }

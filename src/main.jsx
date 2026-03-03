@@ -3,8 +3,8 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from './themes/MainTheme.js';
-import Dashboard from "./App.jsx";
-import Home from "./pages/Home.jsx"
+import App from "./App.jsx";
+import Dashboard from "./pages/Dashboard.jsx"
 import Auctions from "./pages/Auctions.jsx"
 
 createRoot(document.getElementById("root")).render(
@@ -13,12 +13,12 @@ createRoot(document.getElementById("root")).render(
       <CssBaseline />
       <BrowserRouter> {/* O Router envolve tudo */}
         <Routes>
-          {/* O Dashboard vira a rota pai */}
-          <Route element={<Dashboard />}> 
-            <Route path="/home" element={<Home />} />
+          {/* O App vira a rota pai */}
+          <Route element={<App />}> 
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/auctions" element={<Auctions />} />
             {/* Rota padrão para caso a URL esteja vazia */}
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Dashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>

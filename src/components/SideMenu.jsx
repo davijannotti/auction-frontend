@@ -42,7 +42,7 @@ export default function SideMenu() {
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <List>
           {[
-            { text: "Home", icon: <HomeIcon />, path: "/home" },
+            { text: "Home", icon: <HomeIcon />, path: "/dashboard" },
             { text: "Auctions", icon: <GavelIcon />, path: "/auctions" },
             { text: "Itens", icon: <BallotIcon />, path: "/items" },
           ].map((item, index) => (
