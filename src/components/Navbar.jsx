@@ -20,7 +20,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
 
 export default function Navbar({ onMenuClick }) {
-  const [filter, setFilter] = useState("todos");
+  const [filter, setFilter] = useState("all");
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -62,8 +62,7 @@ export default function Navbar({ onMenuClick }) {
             display: "flex",
             alignItems: "center",
             width: { xs: "100%", sm: 400 },
-            bgcolor: "#f5f5f5",
-            boxShadow: "none",
+            bgcolor: "#000000",
             borderRadius: "8px",
           }}
         >
