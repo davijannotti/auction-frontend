@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 import {
   Avatar,
@@ -21,11 +21,7 @@ import BallotIcon from "@mui/icons-material/Ballot";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 export default function SideMenu() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-  };
+  const location = useLocation();
 
   return (
     <Box
@@ -50,7 +46,7 @@ export default function SideMenu() {
               <ListItemButton
                 component={Link}
                 to={item.path}
-                selected={selectedIndex === index}
+                selected={location.pathname === item.path}
                 onClick={(event) => handleListItemClick(event, index)}
                 sx={{ gap: 1 }}
               >
@@ -67,8 +63,9 @@ export default function SideMenu() {
       <List>
         <ListItem disablePadding>
           <ListItemButton
-            selected={selectedIndex === 3}
-            onClick={(event) => handleListItemClick(event, 3)}
+            component={Link} // Adicione isso
+            to="/settings" // Adicione o caminho da rota
+            selected={location.pathname === "/settings"} // Comparação manual aqui
             sx={{ gap: 1 }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
