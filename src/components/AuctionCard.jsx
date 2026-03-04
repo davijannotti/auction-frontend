@@ -71,14 +71,14 @@ export default function AuctionCard({ status, items }) {
                   sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}
                 >
                   <Typography variant="caption" color="text.secondary">
-                    Início: {item.start_time}
+                    Início: {item.start_time.slice(0, -3)}
                   </Typography>
                   <Typography
                     variant="caption"
                     color="error"
                     sx={{ fontWeight: "bold" }}
                   >
-                    Fim: {item.end_time}
+                    Fim: {item.start_time.slice(0, -3)}
                   </Typography>
                 </Stack>
               </ListItem>
