@@ -12,19 +12,22 @@ import {
 
 export default function AuctionCard({ status, items }) {
   const getStatusColor = (status) => {
-    if (status === "Ativo") return "success";
-    if (status === "Aguardando") return "warning";
-    if (status === "Encerrado") return "error";
+    if (status === "ATIVO") return "success";
+    if (status === "AGUARDANDO") return "warning";
+    if (status === "ENCERRADO") return "error";
     return "default";
   };
 
   return (
     <Card
       sx={{
-        minWidth: 370,
+        flex: "1 1 300px", // Pode crescer, PODE ENCOLHER, e o tamanho base é 300px
+        maxWidth: 390, // Mas nunca fica maior que 390px
+        minWidth: 200, // Tamanho mínimo antes de ficar ilegível
         borderRadius: 2,
         boxShadow: 2,
-        height: "fit-content", // Para o card não esticar sem necessidade
+        height: "fit-content",
+        transition: "all 0.3s ease", // Para o encolhimento ser suave junto com o menu
       }}
     >
       <CardContent>
@@ -48,40 +51,30 @@ export default function AuctionCard({ status, items }) {
                   py: 2,
                 }}
               >
-                {/* LINHA: Nome e Início */}
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mb: 0.5 }}
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: "bold" }}
+                  noWrap
                 >
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ fontWeight: "bold" }}
-                    noWrap
-                  >
-                    {item.name}
-                  </Typography>
+                  {item.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="primary"
+                  sx={{ fontWeight: 500 }}
+                >
+                  #{item.category}
+                </Typography>
+
+                <Stack
+                  direction={"row"}
+                  sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}
+                >
                   <Typography variant="caption" color="text.secondary">
                     Início: {item.start_time}
                   </Typography>
-                </Stack>
-
-                {/* LINHA: Categoria e Fim */}
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
                   <Typography
-                    variant="body2"
-                    color="primary"
-                    sx={{ fontWeight: 500 }}
-                  >
-                    {item.category}
-                  </Typography>
-                  <Typography
-                    variant="body2"
+                    variant="caption"
                     color="error"
                     sx={{ fontWeight: "bold" }}
                   >
