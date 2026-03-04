@@ -1,0 +1,62 @@
+import { Card, CardContent, Typography, Box, Chip, Divider, List, ListItem, Stack } from "@mui/material";
+
+export default function AuctionCard({ status, items }) {
+  const getStatusColor = (status) => {
+    if (status === "Ativo") return "success";
+    if (status === "Aguardando") return "warning";
+    if (status === "Encerrado") return "error";
+    return "default";
+  };
+
+  return (
+    <Card 
+      sx={{ 
+        minWidth: 370, 
+        borderRadius: 2, 
+        boxShadow: 2,
+        height: "fit-content" // Para o card não esticar sem necessidade
+      }}
+    >
+      <CardContent>
+        {/* Cabeçalho do Card: O Status */}
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+          <Chip 
+            label={status} 
+            color={getStatusColor(status)} 
+            sx={{ fontWeight: "bold", px: 2 }}
+          />
+        </Box>
+
+        <List disablePadding>
+          {items.map((item, index) => (
+            <Box key={item.id}>
+              <ListItem sx={{ flexDirection: "column", alignItems: "stretch", px: 0, py: 2 }}>
+                {/* LINHA: Nome e Início */}
+                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }} noWrap>
+                    {item.name}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Início: {item.start}
+                  </Typography>
+                </Stack>
+
+                {/* LINHA: Categoria e Fim */}
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
+                    {item.category}
+                  </Typography>
+                  <Typography variant="body2" color="error" sx={{ fontWeight: "bold" }}>
+                    Fim: {item.end}
+                  </Typography>
+                </Stack>
+              </ListItem>
+              {/* Adiciona uma linha divisória entre itens, menos no último */}
+              {index < items.length - 1 && <Divider />}
+            </Box>
+          ))}
+        </List>
+      </CardContent>
+    </Card>
+  );
+}
