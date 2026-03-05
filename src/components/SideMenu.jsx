@@ -38,7 +38,7 @@ export default function SideMenu() {
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <List>
           {[
-            { text: "Home", icon: <HomeIcon />, path: "/dashboard" },
+            { text: "Dashboard", icon: <HomeIcon />, path: "/dashboard" },
             { text: "Auctions", icon: <GavelIcon />, path: "/auctions" },
             { text: "Itens", icon: <BallotIcon />, path: "/items" },
           ].map((item, index) => (
@@ -47,7 +47,6 @@ export default function SideMenu() {
                 component={Link}
                 to={item.path}
                 selected={location.pathname === item.path}
-                onClick={(event) => handleListItemClick(event, index)}
                 sx={{ gap: 1 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
