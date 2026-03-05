@@ -1,21 +1,29 @@
 import AuctionCard from "../components/AuctionCard";
+import AddAuctionModal from "../components/AddAuctionModal";
 import { fetchAuctions } from "../api/auctions";
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+
+import AddIcon from "@mui/icons-material/Add";
 
 export default function Auctions() {
-  const [leiloesData, setLeiloesData] = useState([]);
+  const [auctionData, setAuctionData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const ordemDesejada = ["AGUARDANDO", "ATIVO", "ENCERRADO", "CANCELADO"];
 
   useEffect(() => {
     fetchAuctions()
-      .then((data) => setLeiloesData(data.results))
+      .then((data) => setAuctionData(data.results))
       .finally(() => setLoading(false));
   }, []);
 
-  const groupedLeiloes = leiloesData.reduce((acc, item) => {
+  const handleNewAuction = (newAuction) => {
+    setAuctionData((prevAuctions) => [newAuction, ...prevAuctions]);
+  };
+
+  const groupedAuctions = auctionData.reduce((acc, item) => {
     if (!acc[item.status]) acc[item.status] = [];
     acc[item.status].push(item);
     return acc;
@@ -26,29 +34,56 @@ export default function Auctions() {
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-evenly",
-        flexWrap: "nowrap",
-        gap: 3,
-        p: 2,
-        overflowX: "auto",
-      }}
-    >
-      {ordemDesejada.map((status) => {
-        const itemsParaEsteStatus = groupedLeiloes[status];
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Button
+          onClick={() => setModalOpen(true)}
+          variant="contained"
+          size="small"
+          startIcon={<AddIcon fontSize="inherit" />}
+          sx={{
+            border: 1,
+          }}
+        >
+          Create auction
+        </Button>
+      </Box>
 
-        if (!itemsParaEsteStatus) return null;
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-evenly",
+          flexWrap: "wrap",
+          gap: 3,
+          p: 2,
+          overflow: "hidden",
+        }}
+      >
+        {ordemDesejada.map((status) => {
+          const itemsParaEsteStatus = groupedAuctions[status];
 
-        return (
-          <AuctionCard
-            key={status}
-            status={status}
-            items={itemsParaEsteStatus}
-          />
-        );
-      })}
-    </Box>
+          if (!itemsParaEsteStatus) return null;
+
+          return (
+            <AuctionCard
+              key={status}
+              status={status}
+              items={itemsParaEsteStatus}
+            />
+          );
+        })}
+      </Box>
+
+      <AddAuctionModal
+        open={modalOpen}
+        handleClose={() => setModalOpen(false)}
+        onAuctionCreated={handleNewAuction}
+      />
+    </>
   );
 }
