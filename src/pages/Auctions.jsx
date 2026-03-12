@@ -1,7 +1,7 @@
 import AuctionCard from "../components/AuctionCard";
 import AddAuctionModal from "../components/AddAuctionModal";
 import AddItemModal from "../components/AddItemModal";
-import { fetchAuctions } from "../api/auctions";
+import { apiAuctionsList } from "../api/sdk.gen.js";
 import { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 
@@ -18,7 +18,7 @@ export default function Auctions() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchAuctions();
+        const data = await apiAuctionsList();
         setAuctionData(data);
         setLoading(false);
       } catch (error) {

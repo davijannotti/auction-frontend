@@ -10,9 +10,6 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useState, useEffect } from "react";
-import { fetchAuctions } from "../api/auctions";
-import { fetchCategories } from "../api/categories";
-import { createItem } from "../api/items";
 
 export default function AddItemModal({
   open,

@@ -18,10 +18,6 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddItemModal from "./AddItemModal"; // Importe o novo arquivo
 
-import { createAuction } from "../api/auctions";
-import { fetchCategories } from "../api/categories";
-import { createItem } from "../api/items";
-
 export default function AddAuctionModal({
   open,
   handleClose,
