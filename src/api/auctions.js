@@ -5,10 +5,20 @@ const api = axios.create({
 });
 
 export const fetchAuctions = async () => {
-  try {
-    const response = await api.get("/auctions/");
+  let auctions = [];
 
-    return response.data; 
+  try {
+    let nextUrl = "/auctions/";
+
+    while(nextUrl){
+      const response = await api.get(nextUrl);
+      const data = response.data;
+
+      auctions = [...auctions, ...data.results];
+      nextUrl = data.next;
+    }
+
+    return auctions;
   } catch (error) {
     console.error("Erro ao buscar leilões:", error.response?.data || error.message);
     throw error;

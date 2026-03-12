@@ -7,8 +7,12 @@ import {
   TextField,
   Stack,
   Divider,
+  MenuItem,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchAuctions } from "../api/auctions";
+import { fetchCategories } from "../api/categories";
+import { createItem } from "../api/items";
 
 export default function AddItemModal({
   open,
@@ -23,25 +27,52 @@ export default function AddItemModal({
     starting_bid: "",
     max_bid: "",
     image: "",
-    auctionName: auctionName || "",
-    ownerName: ownerName || "",
+    auction: "",
+    ownerName: "",
   });
+
+  const [auctionData, setAuctionData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleChange = (e) => {
     setItemData({ ...itemData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    onSave(itemData);
-    setItemData({
-      name: "",
-      description: "",
-      starting_bid: "",
-      max_bid: "",
-      image: "",
-    });
+  const handleSave = async () => {
+    if (auctionName) {
+      onSave(itemData);
+      setItemData({
+        name: "",
+        description: "",
+        starting_bid: "",
+        max_bid: "",
+        image: "",
+      });
+    } else {
+      await createItem(itemData);
+    }
+
     handleClose();
   };
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const catData = await fetchCategories();
+        setCategoryData(catData);
+
+        const aucData = await fetchAuctions();
+        setAuctionData(aucData);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
@@ -50,16 +81,40 @@ export default function AddItemModal({
       <DialogContent>
         <Stack spacing={2.5} sx={{ mt: 1 }}>
           <Stack direction="row" spacing={2}>
-            <TextField
-              label="Leilão"
-              disabled={!!auctionName}
-              value={auctionName || itemData.auctionName}
-              fullWidth
-              size="small"
-            />
+            {auctionName ? (
+              <TextField
+                label="Leilão"
+                value={auctionName}
+                disabled
+                fullWidth
+                size="small"
+              />
+            ) : (
+              <TextField
+                select
+                label="Leilão"
+                name="auction"
+                value={itemData.auction}
+                onChange={handleChange}
+                fullWidth
+                size="small"
+              >
+                {loading ? (
+                  <MenuItem value="">Carregando...</MenuItem>
+                ) : auctionData?.length > 0 ? (
+                  auctionData.map((auc) => (
+                    <MenuItem key={auc.id} value={auc.id}>
+                      {auc.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="">Nenhum leilão encontrado</MenuItem>
+                )}
+              </TextField>
+            )}
             <TextField
               label="Proprietário"
-              disabled={!!ownerName}
+              disabled
               value={ownerName || itemData.ownerName}
               fullWidth
               size="small"

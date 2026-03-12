@@ -1,5 +1,6 @@
 import AuctionCard from "../components/AuctionCard";
 import AddAuctionModal from "../components/AddAuctionModal";
+import AddItemModal from "../components/AddItemModal";
 import { fetchAuctions } from "../api/auctions";
 import { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
@@ -10,13 +11,21 @@ export default function Auctions() {
   const [auctionData, setAuctionData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [itemModalOpen, setItemModalOpen] = useState(false);
 
   const ordemDesejada = ["AGUARDANDO", "ATIVO", "ENCERRADO", "CANCELADO"];
 
   useEffect(() => {
-    fetchAuctions()
-      .then((data) => setAuctionData(data.results))
-      .finally(() => setLoading(false));
+    const loadData = async () => {
+      try {
+        const data = await fetchAuctions();
+        setAuctionData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao carregar:", error);
+      }
+    };
+    loadData();
   }, []);
 
   const handleNewAuction = (newAuction) => {
@@ -41,6 +50,19 @@ export default function Auctions() {
           justifyContent: "flex-end",
         }}
       >
+        <Button
+          onClick={() => setItemModalOpen(true)}
+          variant="contained"
+          size="small"
+          startIcon={<AddIcon fontSize="inherit" />}
+          sx={{
+            border: 1,
+            mr: 2,
+          }}
+        >
+          Add Item
+        </Button>
+
         <Button
           onClick={() => setModalOpen(true)}
           variant="contained"
@@ -83,6 +105,11 @@ export default function Auctions() {
         open={modalOpen}
         handleClose={() => setModalOpen(false)}
         onAuctionCreated={handleNewAuction}
+      />
+
+      <AddItemModal
+        open={itemModalOpen}
+        handleClose={() => setItemModalOpen(false)}
       />
     </>
   );

@@ -88,7 +88,7 @@ export default function AddAuctionModal({
       setItems([]);
 
       alert("Leilão e itens criados com sucesso!");
-      
+
       handleClose();
     } catch (err) {
       console.error("Erro completo:", err.response?.data);
@@ -98,7 +98,7 @@ export default function AddAuctionModal({
 
   useEffect(() => {
     fetchCategories()
-      .then((data) => setCategoryData(data.results))
+      .then((data) => setCategoryData(data))
       .finally(() => setLoading(false));
   }, []);
 
@@ -124,11 +124,17 @@ export default function AddAuctionModal({
               value={auctionData.category}
               onChange={handleChange}
             >
-              {categoryData.map((cat) => (
-                <MenuItem key={cat.id} value={cat.id}>
-                  {cat.name}
-                </MenuItem>
-              ))}
+              {loading ? (
+                <MenuItem value="">Carregando...</MenuItem>
+              ) : categoryData?.length > 0 ? (
+                categoryData?.map((cat) => (
+                  <MenuItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">Nenhuma categoria encontrado</MenuItem>
+              )}
             </TextField>
             <TextField
               select

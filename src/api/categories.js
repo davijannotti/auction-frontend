@@ -5,14 +5,22 @@ const api = axios.create({
 });
 
 export const fetchCategories = async () => {
+  let categories = [];
+
   try {
-    // Com Axios, você não precisa de 'response.json()'
-    const response = await api.get("/categories/");
-    
-    // Os dados reais vindos do back estão sempre dentro de .data
-    return response.data; 
+    let nextUrl = "/categories/";
+
+    while(nextUrl){
+      const response = await api.get(nextUrl);
+      const data = response.data;
+
+      categories = [...categories, ...data.results];
+      nextUrl = data.next;
+    }
+
+    return categories;
   } catch (error) {
-    console.error("Error fetching categories:", error.response?.data || error.message);
+    console.error("Erro ao buscar categorias:", error.response?.data || error.message);
     throw error;
   }
 };
