@@ -23,7 +23,7 @@ export const createItem = async (itemData) => {
     const formData = new FormData();
 
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcyODA1ODYxLCJpYXQiOjE3NzI3MTk0NjEsImp0aSI6IjZlOTk4MGMxMjdhZTRhODc4N2Q0MTNlNWY2Y2ExYWRhIiwidXNlcl9pZCI6IjEifQ.pmt2f_9uiOWUqjdijk7LzuGptwsDquTzLAkNiE7zXDs";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzczMjc3NjUwLCJpYXQiOjE3NzMxOTEyNTAsImp0aSI6ImYyMzMwNWRmYTQ1YzQ3ZjVhY2JkYmU3ODM1YjkwYjk1IiwidXNlcl9pZCI6IjEifQ.bdN6GHncboTfm8XbrdfVzCWAvItFiIeggwtNaW3ZR3g";
 
     const response = await api.post("/items/", itemData, {
       headers: {
