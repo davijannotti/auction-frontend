@@ -16,27 +16,47 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AddItemModal from "./AddItemModal"; // Importe o novo arquivo
+import AddItemModal from "./AddItemModal";
+import { apiCategoriesList, apiUsersList, apiAuctionsCreate, apiItemsCreate } from "../api/index";
 
-export default function AddAuctionModal({
-  open,
-  handleClose,
-  onAuctionCreated,
-}) {
-  const [auctionData, setAuctionData] = useState({
+export default function AddAuctionModal({ open, handleClose }) {
+  const [auction, setAuction] = useState({
     name: "",
     category: "",
-    owner: "",
+    owner: 1,
     start_time: "",
     end_time: "",
   });
   const [items, setItems] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
+
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [usersData, setUsersData] = useState([]);
+
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const { data, error } = await apiCategoriesList();
+        setCategoriesData(data.results);
+
+        console.log(data.results);
+
+        // const useData = await apiUsersList();
+        // setUsersData(useData.results);
+      } catch (error) {
+        console.error("Error retrieving data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
   const handleChange = (e) =>
-    setAuctionData({ ...auctionData, [e.target.name]: e.target.value });
+    setAuction({ ...auction, [e.target.name]: e.target.value });
 
   const handleSaveItem = (newItem) => {
     setItems([...items, newItem]);
@@ -48,7 +68,8 @@ export default function AddAuctionModal({
 
   const handleSubmit = async () => {
     try {
-      const auctionResponse = await createAuction(auctionData);
+      console.log(auction);
+      const auctionResponse = await apiAuctionsCreate(auction);
 
       const newAuctionId = auctionResponse.id;
 
@@ -61,51 +82,36 @@ export default function AddAuctionModal({
         }));
 
         for (const item of itemsToPost) {
-          await createItem(item);
+          await apiItemsCreate(item);
         }
       }
 
-      const completeNewAuction = {
-        ...auctionResponse,
-        items: items,
-      };
-
-      if (onAuctionCreated) {
-        onAuctionCreated(completeNewAuction);
-      }
-
-      setAuctionData({
+      setAuction({
         name: "",
         category: "",
-        owner: "",
+        owner: 1,
         start_time: "",
         end_time: "",
       });
       setItems([]);
 
-      alert("Leilão e itens criados com sucesso!");
+      alert("Auction and items created successfully!");
 
       handleClose();
     } catch (err) {
-      console.error("Erro completo:", err.response?.data);
-      alert("Erro na criação. Verifique o console.");
+      console.error("Complete error:", err.response?.data);
+      alert("Error during creation. Check the console.");
     }
   };
 
-  useEffect(() => {
-    fetchCategories()
-      .then((data) => setCategoryData(data))
-      .finally(() => setLoading(false));
-  }, []);
-
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle sx={{ fontWeight: "bold" }}>Criar Novo Leilão</DialogTitle>
+      <DialogTitle sx={{ fontWeight: "bold" }}>Create new Auction</DialogTitle>
       <Divider />
       <DialogContent>
         <Stack spacing={3} sx={{ mt: 1 }}>
           <TextField
-            label="Nome do Leilão"
+            label="Auction name"
             name="name"
             fullWidth
             onChange={handleChange}
@@ -114,52 +120,42 @@ export default function AddAuctionModal({
           <Stack direction="row" spacing={2}>
             <TextField
               select
-              label="Categoria"
+              label="Category"
               name="category"
               fullWidth
-              value={auctionData.category}
+              value={auction.category}
               onChange={handleChange}
             >
               {loading ? (
-                <MenuItem value="">Carregando...</MenuItem>
-              ) : categoryData?.length > 0 ? (
-                categoryData?.map((cat) => (
+                <MenuItem value="">Loading...</MenuItem>
+              ) : categoriesData?.length > 0 ? (
+                categoriesData?.map((cat) => (
                   <MenuItem key={cat.id} value={cat.id}>
                     {cat.name}
                   </MenuItem>
                 ))
               ) : (
-                <MenuItem value="">Nenhuma categoria encontrado</MenuItem>
+                <MenuItem value="">No categories found</MenuItem>
               )}
             </TextField>
-            <TextField
-              select
-              label="Proprietário"
-              name="owner"
-              fullWidth
-              value={auctionData.owner}
-              onChange={handleChange}
-            >
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="Usuário Padrão">Usuário Padrão</MenuItem>
-            </TextField>
+            <TextField label="Owner" value="Admin" disabled fullWidth />
           </Stack>
 
           <Stack direction="row" spacing={2}>
             <TextField
-              label="Início"
+              label="Start"
               name="start_time"
               type="datetime-local"
               fullWidth
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
               onChange={handleChange}
             />
             <TextField
-              label="Fim"
+              label="End"
               name="end_time"
               type="datetime-local"
               fullWidth
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
               onChange={handleChange}
             />
           </Stack>
@@ -174,13 +170,13 @@ export default function AddAuctionModal({
               mb={1}
             >
               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                Itens ({items.length})
+                Items ({items.length})
               </Typography>
               <Button
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={() => setIsItemModalOpen(true)}
               >
-                Novo Item
+                New Item
               </Button>
             </Stack>
 
@@ -215,10 +211,10 @@ export default function AddAuctionModal({
 
       <DialogActions sx={{ p: 2 }}>
         <Button onClick={handleClose} color="inherit">
-          Cancelar
+          Cancel
         </Button>
         <Button onClick={handleSubmit} variant="contained">
-          Criar Leilão
+          Create Auction
         </Button>
       </DialogActions>
 
@@ -226,8 +222,8 @@ export default function AddAuctionModal({
         open={isItemModalOpen}
         handleClose={() => setIsItemModalOpen(false)}
         onSave={handleSaveItem}
-        auctionName={auctionData.name}
-        ownerName={auctionData.owner}
+        auctionName={auction.name}
+        ownerName={auction.owner}
       />
     </Dialog>
   );
