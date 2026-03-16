@@ -21,17 +21,16 @@ export default function AuctionCard({ status, items }) {
   return (
     <Card
       sx={{
-        flex: "1 1 300px", // Pode crescer, PODE ENCOLHER, e o tamanho base é 300px
-        maxWidth: 390, // Mas nunca fica maior que 390px
-        minWidth: 200, // Tamanho mínimo antes de ficar ilegível
+        flex: "1 1 300px",
+        maxWidth: 390,
+        minWidth: 200,
         borderRadius: 2,
         boxShadow: 2,
         height: "fit-content",
-        transition: "all 0.3s ease", // Para o encolhimento ser suave junto com o menu
+        transition: "all 0.3s ease",
       }}
     >
       <CardContent>
-        {/* Cabeçalho do Card: O Status */}
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
           <Chip
             label={status}
@@ -82,7 +81,6 @@ export default function AuctionCard({ status, items }) {
                   </Typography>
                 </Stack>
               </ListItem>
-              {/* Adiciona uma linha divisória entre itens, menos no último */}
               {index < items.length - 1 && <Divider />}
             </Box>
           ))}

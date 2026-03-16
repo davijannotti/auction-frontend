@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 
 import {
@@ -62,9 +61,9 @@ export default function SideMenu() {
       <List>
         <ListItem disablePadding>
           <ListItemButton
-            component={Link} // Adicione isso
-            to="/settings" // Adicione o caminho da rota
-            selected={location.pathname === "/settings"} // Comparação manual aqui
+            component={Link} 
+            to="/settings" 
+            selected={location.pathname === "/settings"} 
             sx={{ gap: 1 }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>

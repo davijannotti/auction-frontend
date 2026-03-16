@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -9,31 +9,15 @@ import {
   MenuItem,
   Divider,
   Box,
-  Popover,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
   Search as SearchIcon,
-  CalendarMonth as CalendarIcon,
 } from "@mui/icons-material";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import dayjs from "dayjs";
+import Calendar from "./Calendar";
 
 export default function Navbar({ onMenuClick }) {
   const [filter, setFilter] = useState("all");
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(dayjs());
-
-  const handleCalendarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCalendarClose = () => {
-    setAnchorEl(null);
-  };
-
-  const openCalendar = Boolean(anchorEl);
 
   return (
     <AppBar
@@ -88,36 +72,7 @@ export default function Navbar({ onMenuClick }) {
             <SearchIcon />
           </IconButton>
         </Paper>
-        <Box>
-          <IconButton color="inherit" onClick={handleCalendarClick}>
-            <CalendarIcon />
-          </IconButton>
-
-          <Popover
-            open={openCalendar}
-            anchorEl={anchorEl}
-            onClose={handleCalendarClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            <Box sx={{ p: 2 }}>
-              <DateCalendar
-                value={selectedDate}
-                onChange={(newDate) => {
-                  setSelectedDate(newDate);
-                  console.log("Selected Date:", newDate.format("DD/MM/YYYY"));
-                  handleCalendarClose();
-                }}
-              />
-            </Box>
-          </Popover>
-        </Box>
+          <Calendar />
       </Toolbar>
     </AppBar>
   );

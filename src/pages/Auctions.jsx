@@ -1,38 +1,41 @@
 import AuctionCard from "../components/AuctionCard";
 import AddAuctionModal from "../components/AddAuctionModal";
 import AddItemModal from "../components/AddItemModal";
-import { apiAuctionsList } from "../api/sdk.gen.js";
+import { apiAuctionsList } from "../api/index";
 import { useEffect, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 
 export default function Auctions() {
-  const [auctionData, setAuctionData] = useState([]);
+  const [auctionsData, setAuctionsData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
+
+  const [auctionModalOpen, setAuctionModalOpen] = useState(false);
   const [itemModalOpen, setItemModalOpen] = useState(false);
 
-  const ordemDesejada = ["AGUARDANDO", "ATIVO", "ENCERRADO", "CANCELADO"];
+  const auctionOrder = ["AGUARDANDO", "ATIVO", "ENCERRADO", "CANCELADO"];
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await apiAuctionsList();
-        setAuctionData(data);
+        const { data, error } = await apiAuctionsList();
+
+        if (error) {
+          console.error("Fail to Load:", error);
+          return;
+        }
+
+        setAuctionsData(data.results);
+      } finally {
         setLoading(false);
-      } catch (error) {
-        console.error("Erro ao carregar:", error);
       }
     };
+
     loadData();
   }, []);
 
-  const handleNewAuction = (newAuction) => {
-    setAuctionData((prevAuctions) => [newAuction, ...prevAuctions]);
-  };
-
-  const groupedAuctions = auctionData.reduce((acc, item) => {
+  const groupedAuctions = auctionsData.reduce((acc, item) => {
     if (!acc[item.status]) acc[item.status] = [];
     acc[item.status].push(item);
     return acc;
@@ -64,7 +67,7 @@ export default function Auctions() {
         </Button>
 
         <Button
-          onClick={() => setModalOpen(true)}
+          onClick={() => setAuctionModalOpen(true)}
           variant="contained"
           size="small"
           startIcon={<AddIcon fontSize="inherit" />}
@@ -86,25 +89,20 @@ export default function Auctions() {
           overflow: "hidden",
         }}
       >
-        {ordemDesejada.map((status) => {
-          const itemsParaEsteStatus = groupedAuctions[status];
+        {auctionOrder.map((status) => {
+          const itemsStatus = groupedAuctions[status];
 
-          if (!itemsParaEsteStatus) return null;
+          if (!itemsStatus) return null;
 
           return (
-            <AuctionCard
-              key={status}
-              status={status}
-              items={itemsParaEsteStatus}
-            />
+            <AuctionCard key={status} status={status} items={itemsStatus} />
           );
         })}
       </Box>
 
       <AddAuctionModal
-        open={modalOpen}
-        handleClose={() => setModalOpen(false)}
-        onAuctionCreated={handleNewAuction}
+        open={auctionModalOpen}
+        handleClose={() => setAuctionModalOpen(false)}
       />
 
       <AddItemModal
