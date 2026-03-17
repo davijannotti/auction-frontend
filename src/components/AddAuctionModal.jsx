@@ -23,7 +23,6 @@ export default function AddAuctionModal({ open, handleClose }) {
   const [auction, setAuction] = useState({
     name: "",
     category: "",
-    owner: 1,
     start_time: "",
     end_time: "",
   });
@@ -40,8 +39,6 @@ export default function AddAuctionModal({ open, handleClose }) {
       try {
         const { data, error } = await apiCategoriesList();
         setCategoriesData(data.results);
-
-        console.log(data.results);
 
         // const useData = await apiUsersList();
         // setUsersData(useData.results);
@@ -68,9 +65,15 @@ export default function AddAuctionModal({ open, handleClose }) {
 
   const handleSubmit = async () => {
     try {
-      console.log(auction);
-      const auctionResponse = await apiAuctionsCreate(auction);
+      const auctionData = {
+        ...auction,
+        start_time: auction.start_time + ":00Z",
+        end_time: auction.end_time + ":00Z",
+      };
 
+      const auctionResponse = await apiAuctionsCreate({
+        body: auctionData
+      });
       const newAuctionId = auctionResponse.id;
 
       if (items.length > 0) {
@@ -89,12 +92,10 @@ export default function AddAuctionModal({ open, handleClose }) {
       setAuction({
         name: "",
         category: "",
-        owner: 1,
         start_time: "",
         end_time: "",
       });
       setItems([]);
-
       alert("Auction and items created successfully!");
 
       handleClose();
