@@ -226,4 +226,3 @@ export const createConfig = (override = {}) => ({
     querySerializer: defaultQuerySerializer,
     ...override,
 });
-//# sourceMappingURL=utils.gen.js.map

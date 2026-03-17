@@ -243,4 +243,3 @@ export const createClient = (config = {}) => {
     trace: makeMethodFn("TRACE"),
   };
 };
-//# sourceMappingURL=client.gen.js.map
