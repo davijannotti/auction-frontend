@@ -12,4 +12,3 @@ export const getAuthToken = async (auth, callback) => {
     }
     return token;
 };
-//# sourceMappingURL=auth.gen.js.map

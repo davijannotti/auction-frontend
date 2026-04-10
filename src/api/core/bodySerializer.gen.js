@@ -55,4 +55,3 @@ export const urlSearchParamsBodySerializer = {
         return data.toString();
     },
 };
-//# sourceMappingURL=bodySerializer.gen.js.map
