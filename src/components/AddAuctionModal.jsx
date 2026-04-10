@@ -41,8 +41,6 @@ export default function AddAuctionModal({ open, handleClose }) {
         const { data, error } = await apiCategoriesList();
         setCategoriesData(data.results);
 
-        console.log(data.results);
-
         // const useData = await apiUsersList();
         // setUsersData(useData.results);
       } catch (error) {

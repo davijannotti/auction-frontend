@@ -4,15 +4,38 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from './themes/MainTheme.js';
 import { client } from "./api/client.gen.js";
+import { refreshAccessToken } from "./api/auth";
 import App from "./App.jsx";
 import Dashboard from "./pages/Dashboard.jsx"
 import Auctions from "./pages/Auctions.jsx"
+import Login from "./pages/Login.jsx"
+import Register from "./pages/Register.jsx";
 
 client.setConfig({
   baseUrl: "http://localhost:8000",
   headers: {
-    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzczNjg4Nzg0LCJpYXQiOjE3NzM2MDIzODQsImp0aSI6IjNhZTRkMWY5N2U1MzQwNjdiOTBlY2JjZDJiNjM3MmNkIiwidXNlcl9pZCI6IjEifQ.FdrL8WoeE8hu1_ht8XSm5zELzYDIStx5G12CwzuUxvw",
+    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
   },
+});
+
+client.interceptors.response.use(async (response) => {
+  if (response.status === 401) {
+    await refreshAccessToken();
+
+    // Repete a requisição original com o novo token
+    const newToken = localStorage.getItem("access_token");
+    const newResponse = await fetch(response.url, {
+      ...response,
+      headers: {
+        ...response.headers,
+        Authorization: `Bearer ${newToken}`,
+      },
+    });
+
+    return newResponse;
+  }
+
+  return response;
 });
 
 createRoot(document.getElementById("root")).render(
@@ -21,6 +44,8 @@ createRoot(document.getElementById("root")).render(
       <CssBaseline />
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route element={<App />}> 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/auctions" element={<Auctions />} />
