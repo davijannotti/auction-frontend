@@ -1,8 +1,8 @@
-import { useLocation, Link } from "react-router-dom";
-
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   Stack,
   Typography,
@@ -13,14 +13,40 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-
 import HomeIcon from "@mui/icons-material/Home";
 import GavelIcon from "@mui/icons-material/Gavel";
 import BallotIcon from "@mui/icons-material/Ballot";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { client } from "../api/client.gen";
 
 export default function SideMenu() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("access_token");
+
+  // Decodifica o payload do JWT para pegar username e email
+  const getUser = () => {
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload;
+    } catch {
+      return null;
+    }
+  };
+
+  const user = getUser();
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    client.setConfig({
+      baseUrl: "http://localhost:8000",
+      headers: { Authorization: "" },
+    });
+    window.location.reload();
+  };
 
   return (
     <Box
@@ -33,14 +59,13 @@ export default function SideMenu() {
       }}
     >
       <Toolbar />
-
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <List>
           {[
             { text: "Dashboard", icon: <HomeIcon />, path: "/dashboard" },
             { text: "Auctions", icon: <GavelIcon />, path: "/auctions" },
             { text: "Itens", icon: <BallotIcon />, path: "/items" },
-          ].map((item, index) => (
+          ].map((item) => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
                 component={Link}
@@ -61,9 +86,9 @@ export default function SideMenu() {
       <List>
         <ListItem disablePadding>
           <ListItemButton
-            component={Link} 
-            to="/settings" 
-            selected={location.pathname === "/settings"} 
+            component={Link}
+            to="/settings"
+            selected={location.pathname === "/settings"}
             sx={{ gap: 1 }}
           >
             <ListItemIcon sx={{ minWidth: 40 }}>
@@ -72,36 +97,60 @@ export default function SideMenu() {
             <ListItemText primary="Settings" />
           </ListItemButton>
         </ListItem>
+
+        {user && (
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleLogout} sx={{ gap: 1 }}>
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
 
       <Divider />
 
-      <Stack
-        direction="row"
-        sx={{
-          p: 2,
-          gap: 2,
-          alignItems: "center",
-          "&:hover": {
-            bgcolor: "rgba(255, 255, 255, 0.05)",
-            cursor: "pointer",
-          },
-        }}
-      >
-        <Avatar alt="Amamentador" src="" sx={{ width: 36, height: 36 }} />
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="body2" noWrap sx={{ fontWeight: 600 }}>
-            Amamentador
-          </Typography>
-          <Typography
-            variant="caption"
-            noWrap
-            sx={{ color: "text.secondary", display: "block" }}
+      {user ? (
+        <Stack
+          direction="row"
+          sx={{
+            p: 2,
+            gap: 2,
+            alignItems: "center",
+            "&:hover": {
+              bgcolor: "rgba(255, 255, 255, 0.05)",
+              cursor: "pointer",
+            },
+          }}
+        >
+          <Avatar alt={user.username} src="" sx={{ width: 36, height: 36 }} />
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="body2" noWrap sx={{ fontWeight: 600 }}>
+              {user.username}
+            </Typography>
+            <Typography
+              variant="caption"
+              noWrap
+              sx={{ color: "text.secondary", display: "block" }}
+            >
+              {user.email}
+            </Typography>
+          </Box>
+        </Stack>
+      ) : (
+        <Box sx={{ p: 2 }}>
+          <Button
+            variant="contained"
+            fullWidth
+            component={Link}
+            to="/login"
           >
-            amamentador@email.com
-          </Typography>
+            Login
+          </Button>
         </Box>
-      </Stack>
+      )}
     </Box>
   );
 }
