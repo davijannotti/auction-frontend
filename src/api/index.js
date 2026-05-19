@@ -36,4 +36,3 @@ export {
   apiUsersStatisticsRetrieve,
   apiUsersUpdate,
 } from "./sdk.gen";
-//# sourceMappingURL=index.js.map

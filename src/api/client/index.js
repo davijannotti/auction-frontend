@@ -4,4 +4,3 @@ export { buildClientParams } from '../core/params.gen';
 export { serializeQueryKeyValue } from '../core/queryKeySerializer.gen';
 export { createClient } from './client.gen';
 export { createConfig, mergeHeaders } from './utils.gen';
-//# sourceMappingURL=index.js.map

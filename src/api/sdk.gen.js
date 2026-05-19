@@ -407,4 +407,3 @@ export const apiUsersRankingRetrieve = (options) => (options?.client ?? client).
     url: '/api/users/ranking/',
     ...options
 });
-//# sourceMappingURL=sdk.gen.js.map

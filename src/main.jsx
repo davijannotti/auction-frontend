@@ -14,7 +14,7 @@ import Register from "./pages/Register.jsx";
 client.setConfig({
   baseUrl: "http://localhost:8000",
   headers: {
-    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    Authorization: `Bearer ${token}`,
   },
 });
 
@@ -49,6 +49,7 @@ createRoot(document.getElementById("root")).render(
           <Route element={<App />}> 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/auctions" element={<Auctions />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<Dashboard />} />
           </Route>
         </Routes>

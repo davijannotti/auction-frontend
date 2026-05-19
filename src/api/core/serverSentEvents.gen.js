@@ -131,4 +131,3 @@ export const createSseClient = ({ onRequest, onSseError, onSseEvent, responseTra
     const stream = createStream();
     return { stream };
 };
-//# sourceMappingURL=serverSentEvents.gen.js.map

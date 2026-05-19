@@ -104,4 +104,3 @@ export const serializeObjectParam = ({ allowReserved, explode, name, style, valu
         .join(separator);
     return style === 'label' || style === 'matrix' ? separator + joinedValues : joinedValues;
 };
-//# sourceMappingURL=pathSerializer.gen.js.map
