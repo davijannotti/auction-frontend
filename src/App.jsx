@@ -41,8 +41,7 @@ export default function App() {
           sx={{ 
             flexGrow: 1, 
             p: 3, 
-            mt: 8,
-            minHeight: '100vh',
+            mt: 11,
             marginLeft: open ? 0 : `-${drawerWidth}px`,
             transition: (theme) => theme.transitions.create('margin', {
               easing: theme.transitions.easing.sharp,

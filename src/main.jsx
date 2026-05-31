@@ -11,18 +11,16 @@ import Auctions from "./pages/Auctions.jsx"
 import Login from "./pages/Login.jsx"
 import Register from "./pages/Register.jsx";
 
+const token = localStorage.getItem("access_token");
 client.setConfig({
   baseUrl: "http://localhost:8000",
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
 });
 
 client.interceptors.response.use(async (response) => {
   if (response.status === 401) {
     await refreshAccessToken();
 
-    // Repete a requisição original com o novo token
     const newToken = localStorage.getItem("access_token");
     const newResponse = await fetch(response.url, {
       ...response,

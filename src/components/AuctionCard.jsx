@@ -1,16 +1,6 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Chip,
-  Divider,
-  List,
-  ListItem,
-  Stack,
-} from "@mui/material";
+import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
 
-export default function AuctionCard({ status, items }) {
+export default function AuctionCard({ auction }) {
   const getStatusColor = (status) => {
     if (status === "ATIVO") return "success";
     if (status === "AGUARDANDO") return "warning";
@@ -19,72 +9,30 @@ export default function AuctionCard({ status, items }) {
   };
 
   return (
-    <Card
-      sx={{
-        flex: "1 1 300px",
-        maxWidth: 390,
-        minWidth: 200,
-        borderRadius: 2,
-        boxShadow: 2,
-        height: "fit-content",
-        transition: "all 0.3s ease",
-      }}
-    >
+    <Card sx={{ width: 400, height: 120, borderRadius: 2, boxShadow: 2 }}>
       <CardContent>
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+          <Typography variant="subtitle1" fontWeight="bold" noWrap>
+            {auction.name}
+          </Typography>
           <Chip
-            label={status}
-            color={getStatusColor(status)}
-            sx={{ fontWeight: "bold", px: 2 }}
+            label={auction.status}
+            color={getStatusColor(auction.status)}
+            size="small"
+            sx={{ fontWeight: "bold" }}
           />
         </Box>
-
-        <List disablePadding>
-          {items.map((item, index) => (
-            <Box key={item.id}>
-              <ListItem
-                sx={{
-                  flexDirection: "column",
-                  alignItems: "stretch",
-                  px: 0,
-                  py: 2,
-                }}
-              >
-                <Typography
-                  variant="subtitle1"
-                  sx={{ fontWeight: "bold" }}
-                  noWrap
-                >
-                  {item.name}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="primary"
-                  sx={{ fontWeight: 500 }}
-                >
-                  #{item.category}
-                </Typography>
-
-                <Stack
-                  direction={"row"}
-                  sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}
-                >
-                  <Typography variant="caption" color="text.secondary">
-                    Início: {item.start_time.slice(0, -3)}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    color="error"
-                    sx={{ fontWeight: "bold" }}
-                  >
-                    Fim: {item.start_time.slice(0, -3)}
-                  </Typography>
-                </Stack>
-              </ListItem>
-              {index < items.length - 1 && <Divider />}
-            </Box>
-          ))}
-        </List>
+        <Typography variant="body2" color="text.secondary">
+          #{auction.category}
+        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
+          <Typography variant="caption" color="text.secondary">
+            Start: {auction.start_time?.slice(0, -3)}
+          </Typography>
+          <Typography variant="caption" color="error" fontWeight="bold">
+            End: {auction.end_time?.slice(0, -3)}
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );

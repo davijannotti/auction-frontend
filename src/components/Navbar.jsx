@@ -9,70 +9,128 @@ import {
   MenuItem,
   Divider,
   Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
 } from "@mui/material";
-import {
-  Menu as MenuIcon,
-  Search as SearchIcon,
-} from "@mui/icons-material";
-import Calendar from "./Calendar";
+import { Link, useLocation } from "react-router-dom";
+import HomeIcon from "@mui/icons-material/Home";
+import GavelIcon from "@mui/icons-material/Gavel";
+import BallotIcon from "@mui/icons-material/Ballot";
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import { Menu as MenuIcon, Search as SearchIcon } from "@mui/icons-material";
 
 export default function Navbar({ onMenuClick }) {
   const [filter, setFilter] = useState("all");
 
+  const location = useLocation();
+
   return (
     <AppBar
       position="fixed"
+      elevation={0}
       sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
         backgroundColor: "#05070a",
-        color: "#fff",
-        boxShadow: "0px 1px 4px rgba(0,0,0,0.1)",
       }}
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <IconButton
-          edge="start"
-          color="inherit"
-          onClick={onMenuClick}
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
-
-        <Paper
-          component="form"
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-evenly",
+          gap: 2,
+          mt: 2,
+          mb: 2,
+        }}
+      >
+        <Box
           sx={{
-            p: "2px 4px",
+            width: 700,
+            height: 50,
+            backgroundColor: "#151F28",
+            borderRadius: 5,
             display: "flex",
             alignItems: "center",
-            width: { xs: "100%", sm: 400 },
-            bgcolor: "#000000",
-            borderRadius: "8px",
           }}
         >
-          <Select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            variant="standard"
-            disableUnderline
-            sx={{ ml: 1, fontSize: "0.8rem", fontWeight: "bold" }}
+          <List
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              width: "100%",
+            }}
           >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="something">Something</MenuItem>
-          </Select>
+            {[
+              {
+                text: "Home",
+                icon: <HomeIcon sx={{ fontSize: 20 }} />,
+                path: "/dashboard",
+              },
+              {
+                text: "Dashboard",
+                icon: <ShowChartIcon sx={{ fontSize: 20 }} />,
+                path: "/dashboard",
+              },
+              {
+                text: "Auctions",
+                icon: <GavelIcon sx={{ fontSize: 20 }} />,
+                path: "/auctions",
+              },
+              {
+                text: "Management",
+                icon: <BallotIcon sx={{ fontSize: 20 }} />,
+                path: "/items",
+              },
+            ].map((item) => (
+              <ListItem
+                key={item.text}
+                disablePadding
+                sx={{ width: "fit-content" }}
+              >
+                <ListItemButton
+                  component={Link}
+                  to={item.path}
+                  selected={location.pathname === item.path}
+                  disableRipple
+                  sx={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    "&:hover": { backgroundColor: "transparent" },
+                    "&.Mui-selected": {
+                      backgroundColor: "transparent",
+                      borderBottom: "2px solid white",
+                      borderRadius: 0,
+                    },
+                    "&.Mui-selected:hover": {
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 30 }}>{item.icon}</ListItemIcon>
+                  <Typography variant="body2" sx={{ lineHeight: 1, mt: 0.5, fontWeight: "bold" }}>
+                    {item.text}
+                  </Typography>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
 
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="What are you looking for?"
-          />
-
-          <IconButton sx={{ p: "10px" }}>
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-          <Calendar />
+        <Box
+          sx={{
+            width: 300,
+            height: 50,
+            backgroundColor: "#151F28",
+            borderRadius: 5,
+            display: "flex",
+            alignItems: "center",
+            px: 2,
+            py: 1,
+          }}
+        ></Box>
       </Toolbar>
     </AppBar>
   );
